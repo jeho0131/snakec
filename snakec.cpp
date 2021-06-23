@@ -33,14 +33,58 @@ void gotoxy(P p) {
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Pos);
 }
 
+void map() {
+	P xy = {0,1};
+	gotoxy(xy);
+	printf("旨");
+	xy.x += 2; 
+	
+	for(int i = 0; i < 28; i++) {
+		gotoxy(xy);
+		printf("收");
+		xy.x += 2;
+	}
+	gotoxy(xy);
+	printf("旬");
+	xy.y += 1;
+	
+	for(int j = 0; j < 27; j++) {
+		gotoxy(xy);
+		printf("早");
+		xy.y += 1; 
+	}
+	
+	gotoxy(xy);
+	printf("旭");
+	xy.x -= 2;
+	
+	for(int k = 0; k < 28; k++) {
+		gotoxy(xy);
+		printf("收");
+		xy.x -= 2;
+	}
+	
+	gotoxy(xy);
+	printf("曲");
+	xy.y -= 1;
+	
+	for(int l = 0; l < 27; l++) {
+		gotoxy(xy);
+		printf("早");
+		xy.y -= 1; 
+	}
+}
+
 void draw(S * s, F * f) {
-	P t = {50,20};
+	P t = {10,0};
 	gotoxy(t);
 	printf("d : %c", s->d);
 	
 	P p = {1,0};
 	gotoxy(p);
-	printf("%d薄",s->point); 
+	printf("%d薄",s->point);
+	
+	map(); 
 	
 	gotoxy(f->pos);
 	printf("%c", f->shape);
@@ -71,13 +115,9 @@ void draw(S * s, F * f) {
 	gotoxy(s->xys[s->h]);
 	printf("≒"); 
 	
-	P o = {50,10};
-	gotoxy(o);
-	printf("hN:%02d", s->h);
-	
 	if(s->xys[s->h].x == f->pos.x && s->xys[s->h].y == f->pos.y) {
-		f->pos.x = (rand()%10)*2;
-		f->pos.y = rand()%30;
+		f->pos.x = ((rand()%28) * 2) + 2;
+		f->pos.y = (rand()%26) + 3;
 		s->point += 1;
 	}
 	
@@ -126,7 +166,7 @@ int main() {
 	char gameover = TRUE;
 	
 	while(gameover) {	
-		Sleep(200);
+		Sleep(100);
 		
 		if(kbhit()) {
 			k = getch();
@@ -166,17 +206,27 @@ int main() {
 			s.xys[0] = s.xys[99];
 		}
 		
-		if((s.xys[s.h].y < 0 || s.xys[s.h].y > 29) || (s.xys[s.h].x < 0 || s.xys[s.h].x > 58)) {
+		if((s.xys[s.h].y < 2 || s.xys[s.h].y > 28) || (s.xys[s.h].x < 2 || s.xys[s.h].x > 56)) {
 			gameover = FALSE;
 		}
 		
 		if(sbreak(s.t, &s)) {
 			gameover = FALSE;
 		}
+		
+		if(s.point > 99) {
+			gameover = FALSE;
+		}
+			
 	}
 	
 	system("cls");
-	printf("GAME OVER");
+	if(s.point > 99) {
+		printf("GAME CLEAR!");
+	}
+	else {
+		printf("GAME OVER");
+	}
 	
 	return 0;
 }
